@@ -3,8 +3,6 @@
 DataLens is a Chrome extension to extract embedded JSON payloads (EOF
 watermarks) appended to PNG images directly from browser context menu.
 
-
-
 ## Prerequisites
 
 - [Bun](https://bun.sh/)

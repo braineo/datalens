@@ -13,7 +13,15 @@ function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive
 }
 
 function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
+  const container =
+    typeof document !== "undefined" ? document.getElementById("datalens-crx-root") : undefined;
+  return (
+    <DialogPrimitive.Portal
+      data-slot="dialog-portal"
+      container={container || undefined}
+      {...props}
+    />
+  );
 }
 
 function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
