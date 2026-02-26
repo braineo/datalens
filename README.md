@@ -1,73 +1,62 @@
-# React + TypeScript + Vite
+# DataLens Chrome Extension
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+DataLens is a Chrome extension to extract embedded JSON payloads (EOF
+watermarks) appended to PNG images directly from browser context menu.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [Bun](https://bun.sh/)
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Clone the repository.
+2. Install the dependencies using Bun:
+   ```bash
+   bun install
+   ```
+3. Start the hot-reloading development server:
+   ```bash
+   bun run dev
+   ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Production Build
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+To bundle the extension for production (e.g., uploading to the Chrome Web Store):
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+bun run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+This will produce a `dist/` directory containing all your bundled extension assets (`manifest.json`, `index.js`, styles, etc.).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Installing the Extension (Unpacked)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+To test the extension natively in your own Chrome browser:
+
+1. Build the project using `bun run build` (or start `bun run dev` for HMR).
+2. Open Chrome and navigate to `chrome://extensions/`.
+3. Enable **Developer mode** via the toggle switch in the top right corner.
+4. Click the **"Load unpacked"** button in the top left.
+5. Select the `dist/` folder that was generated in your project directory.
+6. The DataLens extension will now appear in your list of active extensions.
+
+## Usage
+
+1. Open any web page containing an image with an appended EOF watermark.
+2. **Right-click** on the image.
+3. Select **"Decode Embedded JSON"** from the context menu.
+4. If the JSON is valid and present, a stylish shadcn dialog will appear overlaying the page containing the syntax-highlighted data block.
+
+## Linting and Formatting
+
+The project relies on [oxlint](https://oxc.rs/docs/guide/usage/linter) and [oxfmt](https://oxc.rs/) to keep the code performant and well-structured.
+
+```bash
+# Lint the codebase
+bunx oxlint --fix .
+
+# Format the codebase
+bunx oxfmt --write .
 ```
