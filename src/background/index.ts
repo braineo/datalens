@@ -19,15 +19,33 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       const arrayBuffer = await response.arrayBuffer();
 
       // Decode the ArrayBuffer to a string
-      const decoder = new TextDecoder("utf-8");
-      const text = decoder.decode(arrayBuffer);
+      const bytes = new Uint8Array(arrayBuffer);
 
-      // Look for the EOF watermark separator
-      const separatorIndex = text.lastIndexOf(SEPARATOR);
+      // Convert SEPARATOR to Uint8Array
+      const encoder = new TextEncoder();
+      const separatorBytes = encoder.encode(SEPARATOR);
+
+      // Look for the EOF watermark separator from the end
+      let separatorIndex = -1;
+      for (let i = bytes.length - separatorBytes.length; i >= 0; i--) {
+        let found = true;
+        for (let j = 0; j < separatorBytes.length; j++) {
+          if (bytes[i + j] !== separatorBytes[j]) {
+            found = false;
+            break;
+          }
+        }
+        if (found) {
+          separatorIndex = i;
+          break;
+        }
+      }
 
       if (separatorIndex !== -1) {
         // Extract the payload after the separator
-        const payloadString = text.substring(separatorIndex + SEPARATOR.length);
+        const payloadBytes = bytes.slice(separatorIndex + separatorBytes.length);
+        const decoder = new TextDecoder("utf-8");
+        const payloadString = decoder.decode(payloadBytes);
 
         try {
           // Verify it's valid JSON (or just send the raw string)
