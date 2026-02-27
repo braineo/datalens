@@ -63,7 +63,7 @@ const EOFViewer = () => {
   if (!open) return null;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} modal={false}>
       <DialogContent className="sm:max-w-[500px] w-[95vw] max-h-[85vh] fixed sm:right-6 sm:bottom-6 sm:left-auto sm:top-auto sm:translate-x-0 sm:translate-y-0 right-4 bottom-4 left-4 top-auto translate-x-0 translate-y-0 flex flex-col bg-zinc-950/90 backdrop-blur-2xl border border-white/10 text-zinc-50 shadow-2xl !rounded-2xl overflow-hidden p-0 gap-0">
         <DialogHeader className="shrink-0 flex flex-col gap-1 p-4 border-b border-white/10 bg-white/5">
           <DialogTitle className="flex items-center gap-2.5 text-md font-bold tracking-tight">
@@ -168,12 +168,18 @@ const init = () => {
   const shadowRoot = hostElement.attachShadow({ mode: "open" });
 
   const styleElement = document.createElement("style");
-  styleElement.textContent = cssText;
+  // convert rem to px to prevent host site's root font-size from affecting the extension.
+  styleElement.textContent = cssText.replace(
+    /([0-9.]+)rem/g,
+    (_, p1) => `${parseFloat(p1) * 16}px`,
+  );
   shadowRoot.appendChild(styleElement);
 
   const rootElement = document.createElement("div");
   rootElement.id = "datalens-crx-root";
   rootElement.className = "dark datalens-crx antialiased";
+  // Reset font-size so any em/percent values behave predictably based on 16px
+  rootElement.style.fontSize = "16px";
   shadowRoot.appendChild(rootElement);
 
   const root = createRoot(rootElement);
