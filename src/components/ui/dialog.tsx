@@ -14,7 +14,11 @@ function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive
 
 function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
   const container =
-    typeof document !== "undefined" ? document.getElementById("datalens-crx-root") : undefined;
+    typeof document !== "undefined"
+      ? document
+          .getElementById("datalens-crx-host")
+          ?.shadowRoot?.getElementById("datalens-crx-root")
+      : undefined;
   return (
     <DialogPrimitive.Portal
       data-slot="dialog-portal"

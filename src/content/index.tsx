@@ -13,7 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import "../index.css";
+import cssText from "../index.css?inline";
 
 interface Message {
   type: "SHOW_JSON" | "SHOW_ERROR";
@@ -159,12 +159,22 @@ const EOFViewer = () => {
 
 // Create a mount point and inject the React app
 const init = () => {
+  const hostElement = document.createElement("div");
+  hostElement.id = "datalens-crx-host";
+  hostElement.style.position = "fixed";
+  hostElement.style.zIndex = "2147483647";
+  document.body.appendChild(hostElement);
+
+  const shadowRoot = hostElement.attachShadow({ mode: "open" });
+
+  const styleElement = document.createElement("style");
+  styleElement.textContent = cssText;
+  shadowRoot.appendChild(styleElement);
+
   const rootElement = document.createElement("div");
   rootElement.id = "datalens-crx-root";
   rootElement.className = "dark datalens-crx antialiased";
-  rootElement.style.position = "fixed";
-  rootElement.style.zIndex = "2147483647";
-  document.body.appendChild(rootElement);
+  shadowRoot.appendChild(rootElement);
 
   const root = createRoot(rootElement);
   root.render(<EOFViewer />);
