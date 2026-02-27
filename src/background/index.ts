@@ -15,7 +15,13 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === MENU_ITEM_ID && info.srcUrl && tab?.id) {
     try {
       // Fetch the image as an ArrayBuffer
-      const response = await fetch(info.srcUrl);
+      let srcUrl = info.srcUrl;
+      // Remove /preview suffix for mattermost
+      if (srcUrl.endsWith("/preview")) {
+        srcUrl = srcUrl.replace(/\/preview$/, "");
+      }
+
+      const response = await fetch(srcUrl);
       const arrayBuffer = await response.arrayBuffer();
 
       // Decode the ArrayBuffer to a string
