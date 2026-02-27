@@ -29,6 +29,12 @@ bun run build
 
 This will produce a `dist/` directory containing all your bundled extension assets (`manifest.json`, `index.js`, styles, etc.).
 
+To create a release archive suitable for the Chrome Web Store:
+
+```bash
+cd dist && zip -r ../datalens-release.zip . && cd ..
+```
+
 ## Installing the Extension (Unpacked)
 
 To test the extension natively in your own Chrome browser:
